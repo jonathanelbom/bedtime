@@ -1,5 +1,6 @@
 import OpenAI from 'openai'
 import { systemPrompt } from '../utils/systemPrompt'
+import { createMockStream } from '../utils/mockChat'
 
 interface Message {
   role: 'user' | 'assistant' | 'system'
@@ -13,19 +14,29 @@ interface ChatRequestBody {
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
 
-  if (!config.openaiApiKey) {
-    throw createError({
-      statusCode: 500,
-      statusMessage: 'OpenAI API key is not configured',
-    })
-  }
-
   const body = await readBody<ChatRequestBody>(event)
 
   if (!body.messages || !Array.isArray(body.messages)) {
     throw createError({
       statusCode: 400,
       statusMessage: 'Messages array is required',
+    })
+  }
+
+  setResponseHeaders(event, {
+    'Content-Type': 'text/event-stream',
+    'Cache-Control': 'no-cache',
+    'Connection': 'keep-alive',
+  })
+
+  if (config.mockAi === 'true') {
+    return sendStream(event, createMockStream(body.messages.length))
+  }
+
+  if (!config.openaiApiKey) {
+    throw createError({
+      statusCode: 500,
+      statusMessage: 'OpenAI API key is not configured',
     })
   }
 
@@ -42,14 +53,6 @@ export default defineEventHandler(async (event) => {
     stream: true,
   })
 
-  // Set headers for streaming
-  setResponseHeaders(event, {
-    'Content-Type': 'text/event-stream',
-    'Cache-Control': 'no-cache',
-    'Connection': 'keep-alive',
-  })
-
-  // Create a readable stream for the response
   const encoder = new TextEncoder()
 
   const readableStream = new ReadableStream({

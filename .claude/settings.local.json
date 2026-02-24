@@ -4,7 +4,13 @@
       "Bash(npx nuxi@latest init:*)",
       "Bash(npm install:*)",
       "Bash(npm run postinstall:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(npx shadcn-vue@latest init)"
     ]
-  }
+  },
+  "enabledMcpjsonServers": [
+    "shadcn"
+  ],
+  "enableAllProjectMcpServers": true
 }
