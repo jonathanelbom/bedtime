@@ -119,13 +119,37 @@
   }
 }
 
+/* ── Page background color system ─────────────────────────── */
+/*
+ * @property makes --page-bg a typed, animatable CSS custom property.
+ * Combined with `transition: --page-bg` on :root, ALL elements using
+ * `background-color: var(--page-bg)` smoothly interpolate between page
+ * colors — including both the leaving and entering page simultaneously.
+ */
+@property --page-bg {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #1e1a30;
+}
+
+:root {
+  --page-bg: #1e1a30;
+  --page-transition-ms: 350;  /* fallback (390px wide ref); overridden by app.vue at mount */
+  --sheet-transition-ms: 480; /* fallback (844px tall ref); overridden by app.vue at mount */
+  transition: --page-bg calc(var(--page-transition-ms) * 1ms) ease;
+}
+
+.bg-page {
+  background-color: var(--page-bg);
+}
+
 /* ── Route transitions ─────────────────────────────────────── */
 
 .push-enter-active,
 .push-leave-active,
 .pop-enter-active,
 .pop-leave-active {
-  transition: transform 400ms ease;
+  transition: transform calc(var(--page-transition-ms) * 1ms) ease;
 }
 
 /* PUSH — new slides in from right, old slides to -30% with overlay */
@@ -135,20 +159,48 @@
 .push-leave-to   { transform: translateX(-30%); }
 
 .push-leave-from::after { content: ''; position: absolute; inset: 0; background: black; z-index: 2; opacity: 0; }
-.push-leave-to::after   { content: ''; position: absolute; inset: 0; background: black; z-index: 2; opacity: 0.5; transition: opacity 400ms ease; }
+.push-leave-to::after   { content: ''; position: absolute; inset: 0; background: black; z-index: 2; opacity: 0.5; transition: opacity calc(var(--page-transition-ms) * 1ms) ease; }
 
 /* POP — new slides in from left at -30% with overlay, old slides out to right */
 .pop-enter-from { transform: translateX(-30%); }
 .pop-enter-from::after { content: ''; position: absolute; inset: 0; background: black; z-index: 2; opacity: 0.5; }
 .pop-enter-to   { transform: translateX(0); }
-.pop-enter-to::after   { content: ''; position: absolute; inset: 0; background: black; z-index: 2; opacity: 0; transition: opacity 400ms ease; }
+.pop-enter-to::after   { content: ''; position: absolute; inset: 0; background: black; z-index: 2; opacity: 0; transition: opacity calc(var(--page-transition-ms) * 1ms) ease; }
 .pop-leave-from { transform: translateX(0); z-index: 1; }
 .pop-leave-to   { transform: translateX(100%); z-index: 1; }
+
+/* SHEET — chat slides up from bottom, section stays still with overlay */
+.sheet-enter-active,
+.sheet-leave-active {
+  transition: transform calc(var(--sheet-transition-ms) * 1ms) ease;
+}
+
+.sheet-enter-from { transform: translateY(100%); }
+.sheet-enter-to   { transform: translateY(0); }
+.sheet-leave-from { transform: translateX(0); }
+.sheet-leave-to   { transform: translateX(0); }
+
+.sheet-leave-from::after { content: ''; position: absolute; inset: 0; background: black; z-index: 2; opacity: 0; }
+.sheet-leave-to::after   { content: ''; position: absolute; inset: 0; background: black; z-index: 2; opacity: 0.5; transition: opacity calc(var(--sheet-transition-ms) * 1ms) ease; }
+
+/* SHEET-POP — chat slides down, section stays still, overlay fades away */
+.sheet-pop-enter-active,
+.sheet-pop-leave-active {
+  transition: transform calc(var(--sheet-transition-ms) * 1ms) ease;
+}
+
+.sheet-pop-leave-from { transform: translateY(0); z-index: 1; }
+.sheet-pop-leave-to   { transform: translateY(100%); z-index: 1; }
+.sheet-pop-enter-from { transform: translateX(0); }
+.sheet-pop-enter-to   { transform: translateX(0); }
+
+.sheet-pop-enter-from::after { content: ''; position: absolute; inset: 0; background: black; z-index: 2; opacity: 0.5; }
+.sheet-pop-enter-to::after   { content: ''; position: absolute; inset: 0; background: black; z-index: 2; opacity: 0; transition: opacity calc(var(--sheet-transition-ms) * 1ms) ease; }
 
 /* FADE — peer navigation */
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 2000ms ease;
+  transition: opacity 500ms ease;
 }
 .fade-enter-from,
 .fade-leave-to { opacity: 0; }

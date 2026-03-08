@@ -1,4 +1,5 @@
 import type { SectionsResponse } from '~/types/chat'
+import { useContinuingChat } from '~/composables/useContinuingChat'
 
 export interface Preferences {
   vibe: string
@@ -42,6 +43,7 @@ export const useSessionStore = () => {
 
   const clearResponse = () => {
     structuredResponse.value = null
+    useContinuingChat().clearChat()
   }
 
   return {

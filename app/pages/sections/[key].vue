@@ -2,6 +2,7 @@
 import { SECTION_ORDER, SECTION_LABELS } from '~/types/chat'
 import type { SectionKey, SectionContent } from '~/types/chat'
 import { Button } from '~/components/ui/button'
+import { MessageCircle } from 'lucide-vue-next'
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
 import {
   Dialog,
@@ -35,11 +36,17 @@ const nextSection = computed(() => currentIndex.value < SECTION_ORDER.length - 1
 </script>
 
 <template>
-  <div class="flex flex-col absolute inset-0 overflow-hidden bg-stone-950 text-white">
+  <div class="flex flex-col absolute inset-0 overflow-hidden bg-page text-white">
     <!-- Mini section nav -->
     <div class="shrink-0 px-4 pt-4 pb-2">
       <div class="max-w-2xl mx-auto w-full">
         <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+          <button
+            @click="router.push('/')"
+            class="shrink-0 text-xs px-3 py-1.5 rounded-full transition-colors bg-white/10 text-white/50 hover:bg-white/20"
+          >
+            Setup
+          </button>
           <button
             v-for="key in SECTION_ORDER"
             :key="key"
@@ -47,7 +54,7 @@ const nextSection = computed(() => currentIndex.value < SECTION_ORDER.length - 1
             class="shrink-0 text-xs px-3 py-1.5 rounded-full transition-colors"
             :class="key === sectionKey
               ? 'bg-white text-black font-medium'
-              : 'bg-stone-800 text-stone-400 hover:bg-stone-700'"
+              : 'bg-white/10 text-white/50 hover:bg-white/20'"
           >
             {{ SECTION_LABELS[key] }}
           </button>
@@ -59,60 +66,57 @@ const nextSection = computed(() => currentIndex.value < SECTION_ORDER.length - 1
     <div class="flex-1 overflow-y-auto px-6 py-4">
       <div class="max-w-2xl mx-auto w-full">
         <div v-if="sectionContent">
-          <!-- Back to start + JSON debug -->
-          <div class="flex items-center justify-between mb-4">
-            <Button variant="ghost" size="sm" class="text-stone-500 -ml-2" @click="router.push('/')">
-              ← Start
-            </Button>
-            <Dialog>
-              <DialogTrigger as-child>
-                <Button variant="ghost" size="sm" class="text-stone-600 font-mono text-xs shrink-0">
-                  { }
-                </Button>
-              </DialogTrigger>
-              <DialogContent class="max-w-lg max-h-[80vh] overflow-auto bg-stone-950 border-stone-800">
-                <DialogHeader>
-                  <DialogTitle class="text-white">Raw JSON</DialogTitle>
-                </DialogHeader>
-                <pre class="text-xs text-stone-400 overflow-auto">{{ JSON.stringify(sectionContent, null, 2) }}</pre>
-              </DialogContent>
-            </Dialog>
-          </div>
-
           <!-- Section title -->
           <div class="mb-6">
-            <h1 class="text-2xl font-bold">
-              {{ sectionContent.title || SECTION_LABELS[sectionKey] }}
-            </h1>
-            <p class="text-stone-500 text-sm mt-1">{{ SECTION_LABELS[sectionKey] }}</p>
+            <div class="flex items-start justify-between gap-4">
+              <div>
+                <p class="text-white/40 text-sm mb-1">{{ SECTION_LABELS[sectionKey] }}</p>
+                <h1 class="text-2xl font-bold">
+                  {{ sectionContent.title || SECTION_LABELS[sectionKey] }}
+                </h1>
+              </div>
+              <Dialog>
+                <DialogTrigger as-child>
+                  <Button variant="ghost" size="sm" class="text-white/30 font-mono text-xs shrink-0 -mr-2">
+                    { }
+                  </Button>
+                </DialogTrigger>
+                <DialogContent class="max-w-lg max-h-[80vh] overflow-auto bg-stone-950 border-stone-800">
+                  <DialogHeader>
+                    <DialogTitle class="text-white">Raw JSON</DialogTitle>
+                  </DialogHeader>
+                  <pre class="text-xs text-white/50 overflow-auto">{{ JSON.stringify(sectionContent, null, 2) }}</pre>
+                </DialogContent>
+              </Dialog>
+            </div>
           </div>
 
           <!-- Content cards -->
           <div class="space-y-4">
-            <Card class="bg-stone-900 border-stone-800">
-              <CardHeader class="pb-2">
-                <CardTitle class="text-sm font-medium text-stone-400">Feel</CardTitle>
+            <Card class="bg-white/5 border-white/10 gap-2">
+              <CardHeader>
+                <CardTitle class="text-base font-medium text-white/50">Feel</CardTitle>
               </CardHeader>
               <CardContent>
-                <p class="text-stone-100 leading-relaxed">{{ sectionContent.feel }}</p>
+                <p class="text-white/90 leading-relaxed">{{ sectionContent.feel }}</p>
               </CardContent>
             </Card>
 
-            <Card class="bg-stone-900 border-stone-800">
-              <CardHeader class="pb-2">
-                <CardTitle class="text-sm font-medium text-stone-400">Ableton Tip</CardTitle>
+            <Card class="bg-white/5 border-white/10 gap-2">
+              <CardHeader>
+                <CardTitle class="text-base font-medium text-white/50">Ableton Tip</CardTitle>
               </CardHeader>
               <CardContent>
-                <p class="text-stone-100 leading-relaxed">{{ sectionContent.ableton_tip }}</p>
+                <p class="text-white/90 leading-relaxed">{{ sectionContent.ableton_tip }}</p>
               </CardContent>
             </Card>
 
-            <Card v-if="sectionContent.reference" class="bg-stone-900 border-stone-800">
-              <CardHeader class="pb-2">
-                <CardTitle class="text-sm font-medium text-stone-400">Reference</CardTitle>
+            <Card v-if="sectionContent.reference" class="bg-white/5 border-white/10">
+              <CardHeader>
+                <CardTitle class="text-base font-medium text-white/50">Reference</CardTitle>
               </CardHeader>
               <CardContent>
-                <p class="text-stone-100">{{ sectionContent.reference }}</p>
+                <p class="text-white/90">{{ sectionContent.reference }}</p>
               </CardContent>
             </Card>
           </div>
@@ -120,23 +124,25 @@ const nextSection = computed(() => currentIndex.value < SECTION_ORDER.length - 1
 
         <!-- No content fallback -->
         <div v-else class="text-center py-12">
-          <p class="text-stone-400">Section not found</p>
+          <p class="text-white/50">Section not found</p>
         </div>
       </div>
     </div>
 
     <!-- Sticky bottom nav -->
-    <div class="shrink-0 px-6 py-4 border-t border-white/10 bg-stone-950">
+    <div class="shrink-0 px-6 py-4 border-t border-white/10 bg-page">
       <div class="max-w-2xl mx-auto w-full flex gap-3">
         <Button
-          v-if="prevSection"
           variant="outline"
           class="flex-1"
-          @click="router.push(`/sections/${prevSection}`)"
+          @click="router.push(prevSection ? `/sections/${prevSection}` : '/sections')"
         >
-          ← {{ SECTION_LABELS[prevSection] }}
+          ← {{ prevSection ? SECTION_LABELS[prevSection] : 'Overview' }}
         </Button>
-        <div v-else class="flex-1" />
+
+        <Button variant="outline" class="flex-1 gap-2" @click="router.push('/chat')">
+          <MessageCircle class="size-4" /> Chat
+        </Button>
 
         <Button
           v-if="nextSection"

@@ -16,7 +16,7 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     openaiApiKey: process.env.OPENAI_API_KEY,
-    mockAi: process.env.MOCK_AI || '',
+    mockAi: process.env.MOCK_AI ?? '',
   },
   typescript: {
     strict: true,

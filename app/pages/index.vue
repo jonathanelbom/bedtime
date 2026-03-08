@@ -44,28 +44,28 @@ const handleSubmit = async () => {
 </script>
 
 <template>
-  <div class="flex flex-col absolute inset-0 overflow-hidden bg-zinc-950 text-white">
+  <div class="flex flex-col absolute inset-0 overflow-hidden bg-page text-white">
     <!-- Scrollable content -->
     <div class="flex-1 overflow-y-auto px-6 pt-10 pb-4">
       <div class="max-w-2xl mx-auto w-full">
       <h1 class="text-2xl font-bold mb-10 text-center">Neiliyo Rhythm Section</h1>
 
-      <form @submit.prevent="handleSubmit" class="space-y-8">
+      <form @submit.prevent="handleSubmit" class="flex flex-col gap-8">
         <!-- Vibe -->
-        <div class="space-y-2">
-          <label class="text-sm font-medium text-zinc-400">
+        <div class="flex flex-col gap-2">
+          <label class="text-sm font-medium text-white/50">
             What's the vibe or emotion for this track?
           </label>
           <Input
             v-model="preferences.vibe"
             placeholder="e.g., sunsets and neon screams, late night drives..."
-            class="bg-zinc-900 border-zinc-800 text-white placeholder:text-zinc-600 focus-visible:ring-zinc-600"
+            class="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-white/20"
           />
         </div>
 
         <!-- Time of Day -->
-        <div class="space-y-3">
-          <label class="text-sm font-medium text-zinc-400">
+        <div class="flex flex-col gap-3">
+          <label class="text-sm font-medium text-white/50">
             What time of day does this song live in?
           </label>
           <div class="flex flex-wrap gap-2">
@@ -84,8 +84,8 @@ const handleSubmit = async () => {
         </div>
 
         <!-- Movement -->
-        <div class="space-y-3">
-          <label class="text-sm font-medium text-zinc-400">
+        <div class="flex flex-col gap-3">
+          <label class="text-sm font-medium text-white/50">
             More head-nod or body-sway?
           </label>
           <div class="flex gap-3">
@@ -103,8 +103,8 @@ const handleSubmit = async () => {
         </div>
 
         <!-- Mood -->
-        <div class="space-y-3">
-          <label class="text-sm font-medium text-zinc-400">
+        <div class="flex flex-col gap-3">
+          <label class="text-sm font-medium text-white/50">
             What's the mood?
           </label>
           <div class="grid grid-cols-2 gap-3">
@@ -124,7 +124,7 @@ const handleSubmit = async () => {
     </div>
 
     <!-- Sticky bottom bar -->
-    <div class="shrink-0 px-6 py-4 border-t border-white/10 bg-zinc-950">
+    <div class="shrink-0 px-6 py-4 border-t border-white/10 bg-page">
       <div class="max-w-2xl mx-auto w-full">
         <Button
           class="w-full"

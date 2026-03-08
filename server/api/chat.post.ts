@@ -1,5 +1,6 @@
 import OpenAI from 'openai'
 import { systemPrompt } from '../utils/systemPrompt'
+import { chatSystemPrompt } from '../utils/chatSystemPrompt'
 import { createMockStream } from '../utils/mockChat'
 
 interface Message {
@@ -9,6 +10,7 @@ interface Message {
 
 interface ChatRequestBody {
   messages: Message[]
+  mode?: 'structured' | 'chat'
 }
 
 export default defineEventHandler(async (event) => {
@@ -44,10 +46,12 @@ export default defineEventHandler(async (event) => {
     apiKey: config.openaiApiKey,
   })
 
+  const activeSystemPrompt = body.mode === 'chat' ? chatSystemPrompt : systemPrompt
+
   const stream = await openai.chat.completions.create({
     model: 'gpt-4o',
     messages: [
-      { role: 'system', content: systemPrompt },
+      { role: 'system', content: activeSystemPrompt },
       ...body.messages,
     ],
     stream: true,

@@ -6,6 +6,7 @@ import { Card, CardHeader, CardTitle, CardDescription } from '~/components/ui/ca
 import { Badge } from '~/components/ui/badge'
 import { Button } from '~/components/ui/button'
 import { useSessionStore } from '~/composables/useSessionStore'
+import { MessageCircle } from 'lucide-vue-next'
 
 definePageMeta({ pageIndex: 1 })
 
@@ -91,7 +92,7 @@ const navigateToSection = (key: SectionKey) => router.push(`/sections/${key}`)
 </script>
 
 <template>
-  <div class="flex flex-col absolute inset-0 overflow-hidden bg-slate-950 text-white">
+  <div class="flex flex-col absolute inset-0 overflow-hidden bg-page text-white">
     <!-- Scrollable content -->
     <div class="flex-1 overflow-y-auto px-6 pt-8 pb-4">
       <div class="max-w-2xl mx-auto w-full">
@@ -106,12 +107,12 @@ const navigateToSection = (key: SectionKey) => router.push(`/sections/${key}`)
 
       <!-- Loading -->
       <div v-if="isLoading" class="space-y-3">
+        <p class="text-sm text-white/40 text-center pb-2">Generating your rhythm section...</p>
         <div
           v-for="i in 7"
           :key="i"
-          class="h-20 rounded-lg bg-slate-900 border border-slate-800 animate-pulse"
+          class="h-20 rounded-lg bg-white/5 border border-white/10 animate-pulse"
         />
-        <p class="text-sm text-slate-500 text-center pt-2">Generating your rhythm section...</p>
       </div>
 
       <!-- Error -->
@@ -128,14 +129,14 @@ const navigateToSection = (key: SectionKey) => router.push(`/sections/${key}`)
         <Card
           v-for="key in SECTION_ORDER"
           :key="key"
-          class="cursor-pointer bg-slate-900 border-slate-800 hover:bg-slate-800 transition-colors"
+          class="cursor-pointer bg-white/5 border-white/10 hover:bg-white/10 transition-colors"
           @click="navigateToSection(key)"
         >
           <CardHeader class="pb-3">
             <CardTitle class="text-base">
               {{ structuredResponse.sections[key]?.title || SECTION_LABELS[key] }}
             </CardTitle>
-            <CardDescription class="line-clamp-2 text-slate-400">
+            <CardDescription class="line-clamp-2 text-white/50">
               {{ structuredResponse.sections[key]?.feel || '' }}
             </CardDescription>
           </CardHeader>
@@ -143,18 +144,24 @@ const navigateToSection = (key: SectionKey) => router.push(`/sections/${key}`)
 
         <!-- Debug JSON -->
         <details class="mt-4">
-          <summary class="text-slate-600 text-xs cursor-pointer">View Raw JSON</summary>
-          <pre class="mt-2 text-xs text-slate-600 bg-slate-900 p-4 rounded-lg overflow-auto">{{ JSON.stringify(structuredResponse, null, 2) }}</pre>
+          <summary class="text-white/30 text-xs cursor-pointer">View Raw JSON</summary>
+          <pre class="mt-2 text-xs text-white/30 bg-black/20 p-4 rounded-lg overflow-auto">{{ JSON.stringify(structuredResponse, null, 2) }}</pre>
         </details>
       </div>
       </div>
     </div>
 
     <!-- Sticky bottom bar -->
-    <div class="shrink-0 px-6 py-4 border-t border-white/10 bg-slate-950">
-      <div class="max-w-2xl mx-auto w-full">
-        <Button variant="outline" class="w-full" @click="router.push('/')">
-          ← Edit Preferences
+    <div class="shrink-0 px-6 py-4 border-t border-white/10 bg-page">
+      <div class="max-w-2xl mx-auto w-full flex gap-3">
+        <Button variant="outline" class="flex-1" @click="router.push('/')">
+          ← Setup
+        </Button>
+        <Button variant="outline" class="flex-1 gap-2" :disabled="isLoading" @click="router.push('/chat')">
+          <MessageCircle class="size-4" /> Chat
+        </Button>
+        <Button variant="outline" class="flex-1" :disabled="isLoading" @click="router.push(`/sections/${SECTION_ORDER.at(0)}`)">
+          {{ SECTION_LABELS[SECTION_ORDER.at(0)!] }} →
         </Button>
       </div>
     </div>

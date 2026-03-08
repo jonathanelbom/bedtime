@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "shadcn": {
+      "command": "/Users/jonathan/.nodenv/shims/npx",
+      "args": ["-y", "shadcn-vue@latest", "mcp"]
+    }
+  }
+}
