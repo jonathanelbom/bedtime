@@ -48,7 +48,10 @@ const handleSubmit = async () => {
     <!-- Scrollable content -->
     <div class="flex-1 overflow-y-auto px-6 pt-10 pb-4">
       <div class="max-w-2xl mx-auto w-full">
-      <h1 class="text-2xl font-bold mb-10 text-center">Neiliyo Rhythm Section</h1>
+      <div class="flex items-center gap-3 mb-10">
+        <BedtimeLogo class="size-7 opacity-60 text-white" />
+        <span class="text-3xl font-medium tracking-wide">Bedtime</span>
+      </div>
 
       <form @submit.prevent="handleSubmit" class="flex flex-col gap-8">
         <!-- Vibe -->

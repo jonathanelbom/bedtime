@@ -96,11 +96,14 @@ const navigateToSection = (key: SectionKey) => router.push(`/sections/${key}`)
     <!-- Scrollable content -->
     <div class="flex-1 overflow-y-auto px-6 pt-8 pb-4">
       <div class="max-w-2xl mx-auto w-full">
-      <h1 class="text-2xl font-bold mb-4">Your Rhythm Section</h1>
+      <div class="flex items-center gap-3 mb-4">
+        <BedtimeLogo class="size-7 opacity-60 text-white" />
+        <h1 class="text-2xl font-bold">Your Rhythm Section</h1>
+      </div>
 
       <!-- Preference chips -->
       <div v-if="prefChips.length" class="flex flex-wrap gap-2 mb-6">
-        <Badge v-for="chip in prefChips" :key="chip" variant="secondary" class="text-xs">
+        <Badge v-for="chip in prefChips" :key="chip" variant="secondary" class="text-xs border-0" style="background-color: #00000055">
           {{ chip }}
         </Badge>
       </div>

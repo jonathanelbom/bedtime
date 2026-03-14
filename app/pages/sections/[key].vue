@@ -33,32 +33,46 @@ const sectionContent = computed<SectionContent | null>(() => {
 const currentIndex = computed(() => SECTION_ORDER.indexOf(sectionKey.value))
 const prevSection = computed(() => currentIndex.value > 0 ? SECTION_ORDER[currentIndex.value - 1] : null)
 const nextSection = computed(() => currentIndex.value < SECTION_ORDER.length - 1 ? SECTION_ORDER[currentIndex.value + 1] : null)
+
+const navScrollRef = ref<HTMLDivElement | null>(null)
+const activePillRef = ref<HTMLButtonElement | null>(null)
+
+function scrollActivePillIntoView() {
+  const container = navScrollRef.value
+  const el = activePillRef.value
+  if (!el || !container) return
+  const center = el.offsetLeft - (container.offsetWidth - el.offsetWidth) / 2
+  container.scrollLeft = Math.max(0, center)
+}
+
+onMounted(scrollActivePillIntoView)
+watch(sectionKey, () => nextTick(scrollActivePillIntoView))
 </script>
 
 <template>
   <div class="flex flex-col absolute inset-0 overflow-hidden bg-page text-white">
     <!-- Mini section nav -->
-    <div class="shrink-0 px-4 pt-4 pb-2">
-      <div class="max-w-2xl mx-auto w-full">
-        <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1">
-          <button
-            @click="router.push('/')"
-            class="shrink-0 text-xs px-3 py-1.5 rounded-full transition-colors bg-white/10 text-white/50 hover:bg-white/20"
-          >
-            Setup
-          </button>
-          <button
-            v-for="key in SECTION_ORDER"
-            :key="key"
-            @click="router.push(`/sections/${key}`)"
-            class="shrink-0 text-xs px-3 py-1.5 rounded-full transition-colors"
-            :class="key === sectionKey
-              ? 'bg-white text-black font-medium'
-              : 'bg-white/10 text-white/50 hover:bg-white/20'"
-          >
-            {{ SECTION_LABELS[key] }}
-          </button>
-        </div>
+    <div class="shrink-0 px-6 pt-4 pb-2">
+      <div class="max-w-2xl mx-auto w-full flex items-center">
+      <!-- Logo: pinned left, aligned with content left edge -->
+      <button @click="router.push('/')" class="shrink-0 pr-3">
+        <BedtimeLogo class="size-7 text-white/60 hover:text-white transition-colors" />
+      </button>
+      <!-- Section tabs: scroll freely to the right viewport edge -->
+      <div ref="navScrollRef" class="flex gap-2 overflow-x-auto no-scrollbar pb-1 pr-4">
+        <button
+          v-for="key in SECTION_ORDER"
+          :key="key"
+          :ref="key === sectionKey ? (el) => { activePillRef = el as HTMLButtonElement } : undefined"
+          @click="router.push(`/sections/${key}`)"
+          class="shrink-0 text-xs px-3 py-1.5 rounded-full transition-colors"
+          :class="key === sectionKey
+            ? 'bg-white text-black font-medium'
+            : 'bg-white/10 text-white/50 hover:bg-white/20'"
+        >
+          {{ SECTION_LABELS[key] }}
+        </button>
+      </div>
       </div>
     </div>
 
