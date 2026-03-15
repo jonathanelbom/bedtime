@@ -1,5 +1,7 @@
 import OpenAI from 'openai'
 import { systemPrompt } from '../utils/systemPrompt'
+import { chatSystemPrompt } from '../utils/chatSystemPrompt'
+import { createMockStream } from '../utils/mockChat'
 
 interface Message {
   role: 'user' | 'assistant' | 'system'
@@ -8,17 +10,11 @@ interface Message {
 
 interface ChatRequestBody {
   messages: Message[]
+  mode?: 'structured' | 'chat'
 }
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
-
-  if (!config.openaiApiKey) {
-    throw createError({
-      statusCode: 500,
-      statusMessage: 'OpenAI API key is not configured',
-    })
-  }
 
   const body = await readBody<ChatRequestBody>(event)
 
@@ -29,27 +25,38 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const openai = new OpenAI({
-    apiKey: config.openaiApiKey,
-  })
-
-  const stream = await openai.chat.completions.create({
-    model: 'gpt-4o',
-    messages: [
-      { role: 'system', content: systemPrompt },
-      ...body.messages,
-    ],
-    stream: true,
-  })
-
-  // Set headers for streaming
   setResponseHeaders(event, {
     'Content-Type': 'text/event-stream',
     'Cache-Control': 'no-cache',
     'Connection': 'keep-alive',
   })
 
-  // Create a readable stream for the response
+  if (config.mockAi === 'true') {
+    return sendStream(event, createMockStream(body.messages.length))
+  }
+
+  if (!config.openaiApiKey) {
+    throw createError({
+      statusCode: 500,
+      statusMessage: 'OpenAI API key is not configured',
+    })
+  }
+
+  const openai = new OpenAI({
+    apiKey: config.openaiApiKey,
+  })
+
+  const activeSystemPrompt = body.mode === 'chat' ? chatSystemPrompt : systemPrompt
+
+  const stream = await openai.chat.completions.create({
+    model: 'gpt-4o',
+    messages: [
+      { role: 'system', content: activeSystemPrompt },
+      ...body.messages,
+    ],
+    stream: true,
+  })
+
   const encoder = new TextEncoder()
 
   const readableStream = new ReadableStream({
