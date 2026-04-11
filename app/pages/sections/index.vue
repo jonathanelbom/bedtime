@@ -26,7 +26,7 @@ if (!structuredResponse.value && !initialMessage.value) {
 // Preference chips for display
 const prefChips = computed(() => {
   const p = preferences.value
-  return [p.vibe, p.timeOfDay, p.movement, p.mood].filter(Boolean)
+  return [p.vibe, p.timeOfDay, p.movement, p.mood.length ? p.mood.join(', ') : ''].filter(s => s !== '')
 })
 
 onMounted(async () => {
@@ -141,7 +141,7 @@ const navigateToSection = (key: SectionKey) => router.push(`/sections/${key}`)
               {{ structuredResponse.sections[key]?.title || SECTION_LABELS[key] }}
             </CardTitle>
             <CardDescription class="line-clamp-2 text-white/50">
-              {{ structuredResponse.sections[key]?.feel || '' }}
+              {{ Array.isArray(structuredResponse.sections[key]?.feel) ? structuredResponse.sections[key].feel.join(' ') : (structuredResponse.sections[key]?.feel || '') }}
             </CardDescription>
           </CardHeader>
         </Card>
