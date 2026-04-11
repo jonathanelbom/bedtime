@@ -11,7 +11,7 @@ import { MessageCircle } from 'lucide-vue-next'
 definePageMeta({ pageIndex: 1 })
 
 const router = useRouter()
-const { preferences, structuredResponse } = useSessionStore()
+const { preferences, structuredResponse, generatedSystemPrompt } = useSessionStore()
 const initialMessage = useState<string>('initialMessage')
 
 const isLoading = ref(!structuredResponse.value)
@@ -26,7 +26,7 @@ if (!structuredResponse.value && !initialMessage.value) {
 // Preference chips for display
 const prefChips = computed(() => {
   const p = preferences.value
-  return [p.vibe, p.timeOfDay, p.movement, p.mood].filter(Boolean)
+  return [p.vibe, p.timeOfDay, p.movement, p.mood.length ? p.mood.join(', ') : ''].filter(s => s !== '')
 })
 
 onMounted(async () => {
@@ -43,6 +43,7 @@ onMounted(async () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         messages: [{ role: 'user', content: initialMessage.value }],
+        systemPrompt: generatedSystemPrompt.value ?? undefined,
       }),
     })
 
@@ -140,7 +141,7 @@ const navigateToSection = (key: SectionKey) => router.push(`/sections/${key}`)
               {{ structuredResponse.sections[key]?.title || SECTION_LABELS[key] }}
             </CardTitle>
             <CardDescription class="line-clamp-2 text-white/50">
-              {{ structuredResponse.sections[key]?.feel || '' }}
+              {{ Array.isArray(structuredResponse.sections[key]?.feel) ? structuredResponse.sections[key].feel.join(' ') : (structuredResponse.sections[key]?.feel || '') }}
             </CardDescription>
           </CardHeader>
         </Card>

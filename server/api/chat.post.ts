@@ -11,6 +11,7 @@ interface Message {
 interface ChatRequestBody {
   messages: Message[]
   mode?: 'structured' | 'chat'
+  systemPrompt?: string
 }
 
 export default defineEventHandler(async (event) => {
@@ -46,7 +47,9 @@ export default defineEventHandler(async (event) => {
     apiKey: config.openaiApiKey,
   })
 
-  const activeSystemPrompt = body.mode === 'chat' ? chatSystemPrompt : systemPrompt
+  const activeSystemPrompt = body.mode === 'chat'
+    ? chatSystemPrompt
+    : (body.systemPrompt ?? systemPrompt)
 
   const stream = await openai.chat.completions.create({
     model: 'gpt-4o',
