@@ -112,7 +112,7 @@ watch(sectionKey, () => nextTick(scrollActivePillIntoView))
                 <CardTitle class="text-base font-medium text-white/50">Feel</CardTitle>
               </CardHeader>
               <CardContent>
-                <p class="text-white/90 leading-relaxed">{{ sectionContent.feel }}</p>
+                <p class="text-white/90 leading-relaxed">{{ Array.isArray(sectionContent.feel) ? sectionContent.feel.join(' ') : sectionContent.feel }}</p>
               </CardContent>
             </Card>
 

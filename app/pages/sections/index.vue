@@ -11,7 +11,7 @@ import { MessageCircle } from 'lucide-vue-next'
 definePageMeta({ pageIndex: 1 })
 
 const router = useRouter()
-const { preferences, structuredResponse } = useSessionStore()
+const { preferences, structuredResponse, generatedSystemPrompt } = useSessionStore()
 const initialMessage = useState<string>('initialMessage')
 
 const isLoading = ref(!structuredResponse.value)
@@ -43,6 +43,7 @@ onMounted(async () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         messages: [{ role: 'user', content: initialMessage.value }],
+        systemPrompt: generatedSystemPrompt.value ?? undefined,
       }),
     })
 
