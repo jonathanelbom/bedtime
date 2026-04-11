@@ -32,7 +32,7 @@ export function getSheetTransitionDuration(viewportHeight: number): number {
 const PALETTES = {
   // A: very dark, minimal tint
   original: {
-    setup:       '#1e1a30', // deep velvet purple
+    setup:       '#1b1a24', // ool charcoal-violet
     overview:    '#1e2438', // deep navy
     tempo:       '#152530', // dark navy-teal
     drums:       '#142218', // dark forest
@@ -45,6 +45,20 @@ const PALETTES = {
     tealDark:    '#1a2a30',
     mauveDark:   '#231f30',
   },
+  // original: {
+  //   setup:       '#1e1a30', // deep velvet purple
+  //   overview:    '#1e2438', // deep navy
+  //   tempo:       '#152530', // dark navy-teal
+  //   drums:       '#142218', // dark forest
+  //   bass:        '#1d1a2e', // deep indigo-plum
+  //   chords:      '#1b1a24', // cool charcoal-violet
+  //   keys_scales: '#162030', // dark slate-teal
+  //   guitar:      '#20191e', // dark rose-gray
+  //   avoid:       '#14102a', // near-black purple
+  //   chat:        '#101820', // deep cool-dark
+  //   tealDark:    '#1a2a30',
+  //   mauveDark:   '#231f30',
+  // },
   // B: same darkness, clearly tinted
   medium: {
     setup:       '#1c1038', // vivid deep purple
@@ -94,7 +108,7 @@ const PALETTES = {
 } as const
 
 // ← change 'original' / 'medium' / 'high' / 'vivid' to compare
-export const PAGE_COLORS = PALETTES.vivid
+export const PAGE_COLORS = PALETTES.original;
 
 export const SECTION_COLORS: Record<SectionKey, string> = {
   tempo:       PAGE_COLORS.tempo,
