@@ -1,92 +1,24 @@
 <script setup lang="ts">
 import { SECTION_ORDER, SECTION_LABELS } from '~/types/chat'
 import type { SectionKey } from '~/types/chat'
-import { parseStructuredResponse, isSectionsResponse } from '~/utils/parseResponse'
 import { Card, CardHeader, CardTitle, CardDescription } from '~/components/ui/card'
 import { Badge } from '~/components/ui/badge'
 import { Button } from '~/components/ui/button'
 import { useSessionStore } from '~/composables/useSessionStore'
-import { MessageCircle } from 'lucide-vue-next'
+import { ArrowLeft, ArrowRight, MessageCircle } from 'lucide-vue-next'
 
 definePageMeta({ pageIndex: 1 })
 
 const router = useRouter()
-const { preferences, structuredResponse, generatedSystemPrompt } = useSessionStore()
-const initialMessage = useState<string>('initialMessage')
+const { preferences, structuredResponse } = useSessionStore()
 
-const isLoading = ref(!structuredResponse.value)
-const error = ref<string | null>(null)
-const rawContent = ref('')
-
-// Redirect if no data on refresh
-if (!structuredResponse.value && !initialMessage.value) {
+if (!structuredResponse.value) {
   navigateTo('/')
 }
 
-// Preference chips for display
 const prefChips = computed(() => {
   const p = preferences.value
   return [p.vibe, p.timeOfDay, p.movement, p.mood.length ? p.mood.join(', ') : ''].filter(s => s !== '')
-})
-
-onMounted(async () => {
-  if (structuredResponse.value) return
-
-  if (!initialMessage.value) {
-    navigateTo('/')
-    return
-  }
-
-  try {
-    const response = await fetch('/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        messages: [{ role: 'user', content: initialMessage.value }],
-        systemPrompt: generatedSystemPrompt.value ?? undefined,
-      }),
-    })
-
-    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`)
-    if (!response.body) throw new Error('No response body')
-
-    const reader = response.body.getReader()
-    const decoder = new TextDecoder()
-    let accumulatedContent = ''
-
-    while (true) {
-      const { done, value } = await reader.read()
-      if (done) break
-
-      const chunk = decoder.decode(value, { stream: true })
-      for (const line of chunk.split('\n')) {
-        if (!line.startsWith('data: ')) continue
-        const data = line.slice(6)
-        if (data === '[DONE]') continue
-        try {
-          const parsed = JSON.parse(data)
-          if (parsed.content) {
-            accumulatedContent += parsed.content
-            rawContent.value = accumulatedContent
-          }
-        } catch {}
-      }
-    }
-
-    console.log('Raw accumulated content:', accumulatedContent)
-    const parsed = parseStructuredResponse(accumulatedContent)
-    console.log('Parsed response:', parsed)
-
-    if (parsed && isSectionsResponse(parsed)) {
-      structuredResponse.value = parsed
-    } else {
-      error.value = 'Failed to parse response'
-    }
-  } catch (err) {
-    error.value = err instanceof Error ? err.message : 'Unknown error'
-  } finally {
-    isLoading.value = false
-  }
 })
 
 const navigateToSection = (key: SectionKey) => router.push(`/sections/${key}`)
@@ -109,27 +41,8 @@ const navigateToSection = (key: SectionKey) => router.push(`/sections/${key}`)
         </Badge>
       </div>
 
-      <!-- Loading -->
-      <div v-if="isLoading" class="space-y-3">
-        <p class="text-sm text-white/40 text-center pb-2">Generating your rhythm section...</p>
-        <div
-          v-for="i in 7"
-          :key="i"
-          class="h-20 rounded-lg bg-white/5 border border-white/10 animate-pulse"
-        />
-      </div>
-
-      <!-- Error -->
-      <div v-else-if="error" class="bg-red-900/20 border border-red-800 rounded-lg p-4">
-        <p class="text-red-400 mb-2">{{ error }}</p>
-        <details v-if="rawContent">
-          <summary class="text-slate-500 text-xs cursor-pointer mb-2">View raw response</summary>
-          <pre class="text-xs text-slate-500 overflow-auto max-h-40">{{ rawContent }}</pre>
-        </details>
-      </div>
-
       <!-- Section cards -->
-      <div v-else-if="structuredResponse" class="space-y-3">
+      <div v-if="structuredResponse" class="space-y-3">
         <Card
           v-for="key in SECTION_ORDER"
           :key="key"
@@ -140,7 +53,7 @@ const navigateToSection = (key: SectionKey) => router.push(`/sections/${key}`)
             <CardTitle class="text-base">
               {{ structuredResponse.sections[key]?.title || SECTION_LABELS[key] }}
             </CardTitle>
-            <CardDescription class="line-clamp-2 text-white/50">
+            <CardDescription class="line-clamp-2 text-white/70">
               {{ Array.isArray(structuredResponse.sections[key]?.feel) ? structuredResponse.sections[key].feel.join(' ') : (structuredResponse.sections[key]?.feel || '') }}
             </CardDescription>
           </CardHeader>
@@ -157,15 +70,15 @@ const navigateToSection = (key: SectionKey) => router.push(`/sections/${key}`)
 
     <!-- Sticky bottom bar -->
     <div class="shrink-0 px-6 py-4 border-t border-white/10 bg-page">
-      <div class="max-w-2xl mx-auto w-full flex gap-3">
+      <div class="max-w-2xl mx-auto w-full flex gap-3 @container">
         <Button variant="outline" class="flex-1" @click="router.push('/')">
-          ← Setup
+          <ArrowLeft class="size-4 shrink-0" /><span class="hidden @[340px]:inline"> Setup</span>
         </Button>
-        <Button variant="outline" class="flex-1 gap-2" :disabled="isLoading" @click="router.push('/chat')">
-          <MessageCircle class="size-4" /> Chat
+        <Button variant="outline" class="flex-1 gap-2" @click="router.push('/chat')">
+          <MessageCircle class="size-4" /> Vibesplain it
         </Button>
-        <Button variant="outline" class="flex-1" :disabled="isLoading" @click="router.push(`/sections/${SECTION_ORDER.at(0)}`)">
-          {{ SECTION_LABELS[SECTION_ORDER.at(0)!] }} →
+        <Button variant="outline" class="flex-1" @click="router.push(`/sections/${SECTION_ORDER.at(0)}`)">
+          <span class="hidden @[340px]:inline">{{ SECTION_LABELS[SECTION_ORDER.at(0)!] }}</span> <ArrowRight class="size-4 shrink-0" />
         </Button>
       </div>
     </div>

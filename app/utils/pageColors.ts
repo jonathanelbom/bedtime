@@ -4,6 +4,7 @@ import type { SectionKey } from '~/types/chat'
 // All other widths scale proportionally, clamped to a sensible range.
 const TRANSITION_REF_WIDTH = 390
 const TRANSITION_REF_MS   = 350
+const TRANSITION_REF_MAX   = 700
 const TRANSITION_SPEED     = TRANSITION_REF_WIDTH / TRANSITION_REF_MS // px/ms
 
 /**
@@ -12,12 +13,12 @@ const TRANSITION_SPEED     = TRANSITION_REF_WIDTH / TRANSITION_REF_MS // px/ms
  * Clamped to [400, 800] so it never feels too snappy or too sluggish.
  */
 export function getTransitionDuration(viewportWidth: number): number {
-  return Math.round(Math.min(Math.max(viewportWidth / TRANSITION_SPEED, 400), 800))
+  return Math.round(Math.min(Math.max(viewportWidth / TRANSITION_SPEED, TRANSITION_REF_MS), TRANSITION_REF_MAX))
 }
 
 // Calibration: at 844px (typical mobile height) the sheet transition should feel like ~480ms.
 const SHEET_REF_HEIGHT = 844
-const SHEET_REF_MS     = 480
+const SHEET_REF_MS     = 250
 const SHEET_SPEED      = SHEET_REF_HEIGHT / SHEET_REF_MS // px/ms
 
 /**
@@ -26,8 +27,10 @@ const SHEET_SPEED      = SHEET_REF_HEIGHT / SHEET_REF_MS // px/ms
  * Clamped to [350, 750] so it never feels too snappy or too sluggish.
  */
 export function getSheetTransitionDuration(viewportHeight: number): number {
-  return Math.round(Math.min(Math.max(viewportHeight / SHEET_SPEED, 350), 750))
+  return Math.round(Math.min(Math.max(viewportHeight / SHEET_SPEED, TRANSITION_REF_MS), TRANSITION_REF_MAX))
 }
+
+// linear-gradient(-45deg, var(--page-bg), oklch(from var(--page-bg) l c calc(h + 107)))
 
 const PALETTES = {
   // A: very dark, minimal tint

@@ -2,7 +2,7 @@
 import { SECTION_ORDER, SECTION_LABELS } from '~/types/chat'
 import type { SectionKey, SectionContent } from '~/types/chat'
 import { Button } from '~/components/ui/button'
-import { MessageCircle } from 'lucide-vue-next'
+import { MessageCircle, ArrowLeft, ArrowRight } from 'lucide-vue-next'
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
 import {
   Dialog,
@@ -47,6 +47,7 @@ function scrollActivePillIntoView() {
 
 onMounted(scrollActivePillIntoView)
 watch(sectionKey, () => nextTick(scrollActivePillIntoView))
+
 </script>
 
 <template>
@@ -59,7 +60,7 @@ watch(sectionKey, () => nextTick(scrollActivePillIntoView))
         <BedtimeLogo class="size-7 text-white/60 hover:text-white transition-colors" />
       </button>
       <!-- Section tabs: scroll freely to the right viewport edge -->
-      <div ref="navScrollRef" class="flex gap-2 overflow-x-auto no-scrollbar pb-1 pr-4">
+      <div ref="navScrollRef" class="flex gap-2 overflow-x-auto no-scrollbar pt-1 pb-1 pr-4 pl-1 -mr-6">
         <button
           v-for="key in SECTION_ORDER"
           :key="key"
@@ -145,17 +146,17 @@ watch(sectionKey, () => nextTick(scrollActivePillIntoView))
 
     <!-- Sticky bottom nav -->
     <div class="shrink-0 px-6 py-4 border-t border-white/10 bg-page">
-      <div class="max-w-2xl mx-auto w-full flex gap-3">
+      <div class="max-w-2xl mx-auto w-full flex gap-3 @container">
         <Button
           variant="outline"
           class="flex-1"
           @click="router.push(prevSection ? `/sections/${prevSection}` : '/sections')"
         >
-          ← {{ prevSection ? SECTION_LABELS[prevSection] : 'Overview' }}
+          <ArrowLeft class="size-4 shrink-0" /><span class="hidden @[440px]:inline">{{ prevSection ? SECTION_LABELS[prevSection] : 'Overview' }}</span>
         </Button>
 
         <Button variant="outline" class="flex-1 gap-2" @click="router.push('/chat')">
-          <MessageCircle class="size-4" /> Chat
+          <MessageCircle class="size-4" /> Vibesplain it
         </Button>
 
         <Button
@@ -164,7 +165,7 @@ watch(sectionKey, () => nextTick(scrollActivePillIntoView))
           class="flex-1"
           @click="router.push(`/sections/${nextSection}`)"
         >
-          {{ SECTION_LABELS[nextSection] }} →
+          <span class="hidden @[440px]:inline">{{ SECTION_LABELS[nextSection] }}</span><ArrowRight class="size-4 shrink-0" />
         </Button>
         <div v-else class="flex-1" />
       </div>

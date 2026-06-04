@@ -47,10 +47,13 @@ const transitionConfig = computed(() => ({
     ? sheetTransitionDuration.value
     : transitionDuration.value,
 }))
+
+const showSplash = ref(true) // disabled for loading screen dev
 </script>
 
 <template>
   <div style="position: relative; width: 100vw; height: 100dvh; overflow: hidden;">
     <NuxtPage :transition="transitionConfig" />
+    <SplashScreen v-if="showSplash" @done="showSplash = false" />
   </div>
 </template>

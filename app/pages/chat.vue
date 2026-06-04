@@ -51,7 +51,7 @@ const handleKeydown = (e: KeyboardEvent) => {
 const autoResize = (e: Event) => {
   const el = e.target as HTMLTextAreaElement
   el.style.height = 'auto'
-  el.style.height = `${el.scrollHeight}px`
+  el.style.height = `${el.scrollHeight + 2}px`
 }
 </script>
 
@@ -60,7 +60,7 @@ const autoResize = (e: Event) => {
     <!-- Top bar -->
     <div class="shrink-0 px-4 pt-4 pb-3 border-b border-white/10">
       <div class="max-w-2xl mx-auto w-full flex items-center justify-between">
-        <span class="text-base font-semibold text-white">Let's talk about it</span>
+        <span class="text-base font-semibold text-white">Vibesplain it to me!</span>
         <Button variant="ghost" size="sm" class="text-white/60 hover:text-white gap-1.5 -mr-2" @click="router.back()">
           <X class="size-4" /> Close
         </Button>
@@ -121,3 +121,15 @@ const autoResize = (e: Event) => {
     </div>
   </div>
 </template>
+
+<style>
+textarea:placeholder-shown {
+  text-overflow: ellipsis;
+}
+
+textarea::placeholder {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+</style>
