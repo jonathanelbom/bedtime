@@ -16,7 +16,10 @@ const letterDelays = messageChars.map(() => Math.random() * 1000)
 onMounted(async () => {
   setTimeout(() => { textActive.value = true }, 80)
 
-  if (!preferences.value.vibe.trim()) return
+  if (!preferences.value.vibe.trim()) {
+    router.replace('/')
+    return
+  }
 
   clearResponse()
 
