@@ -81,13 +81,13 @@ export function createMockStream(messageCount: number): ReadableStream {
 
   return new ReadableStream({
     async start(controller) {
-      await sleep(100) // minimal pause to simulate network round-trip
+      await sleep(600)
 
       for (const chunk of chunks) {
         controller.enqueue(
           encoder.encode(`data: ${JSON.stringify({ content: chunk })}\n\n`),
         )
-        await sleep(1) // near-instant for dev
+        await sleep(18)
       }
 
       controller.enqueue(encoder.encode('data: [DONE]\n\n'))

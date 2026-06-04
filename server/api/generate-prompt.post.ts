@@ -55,6 +55,7 @@ export default defineEventHandler(async (event) => {
   }
 
   if (config.mockAi === 'true') {
+    await new Promise(resolve => setTimeout(resolve, 2500))
     return { prompt: MOCK_PROMPT + RESPONSE_FORMAT }
   }
 

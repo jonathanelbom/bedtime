@@ -134,14 +134,21 @@
 }
 
 :root {
-  --page-bg: #1e1a30;
+  /* --page-bg: #1e1a30; */
+  --page-bg: oklch(0.2018 0.07135 220.24) !important;
+  --bg-page: linear-gradient(-45deg, var(--page-bg), oklch(from var(--page-bg) l c calc(h + 120)));
   --page-transition-ms: 350;  /* fallback (390px wide ref); overridden by app.vue at mount */
-  --sheet-transition-ms: 480; /* fallback (844px tall ref); overridden by app.vue at mount */
+  --sheet-transition-ms: 400; /* fallback (844px tall ref); overridden by app.vue at mount */
   transition: --page-bg calc(var(--page-transition-ms) * 1ms) ease;
 }
 
 .bg-page {
-  background-color: var(--page-bg);
+  /* background-color: var(--page-bg); */
+  /* --page-bg: #142218 !important; */
+  /* --page-bg: oklch(0.2018 0.07135 220.24) !important; */
+  background: var(--bg-page);
+  /* linear-gradient(-45deg, var(--page-bg), oklch(from var(--page-bg) l c calc(h + 120))); */
+  /* background: linear-gradient(-45deg, var(--page-bg), oklch(from var(--page-bg) l c calc(h + 180)), oklch(from var(--page-bg) l c calc(h + 90))); */
 }
 
 /* ── Route transitions ─────────────────────────────────────── */
@@ -176,6 +183,7 @@
   transition: transform calc(var(--sheet-transition-ms) * 1ms) ease;
 }
 
+
 .sheet-enter-from { transform: translateY(100%); }
 .sheet-enter-to   { transform: translateY(0); }
 .sheet-leave-from { transform: translateX(0); }
@@ -187,7 +195,7 @@
 /* SHEET-POP — chat slides down, section stays still, overlay fades away */
 .sheet-pop-enter-active,
 .sheet-pop-leave-active {
-  transition: transform calc(var(--sheet-transition-ms) * 1ms) ease;
+  transition: transform calc(var(--sheet-transition-ms) * 1ms * .75) ease-in;
 }
 
 .sheet-pop-leave-from { transform: translateY(0); z-index: 1; }
