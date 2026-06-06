@@ -30,7 +30,10 @@ const onMessageComplete = () => {
 }
 
 onMounted(async () => {
-  if (!preferences.value.vibe.trim()) return
+  if (!preferences.value.vibe.trim()) {
+    router.replace('/')
+    return
+  }
 
   clearResponse()
 
