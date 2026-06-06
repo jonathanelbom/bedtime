@@ -6,16 +6,30 @@ definePageMeta({ pageIndex: 0.5 })
 
 const router = useRouter()
 const { preferences, generatedSystemPrompt, structuredResponse, buildMessage, commit, clearResponse } = useSessionStore()
-const loadingMessage = useState<string>('loadingMessage', () => 'building')
 const error = ref<string | null>(null)
-const textActive = ref(false)
-
-const messageChars = loadingMessage.value.split('')
-const letterDelays = messageChars.map(() => Math.random() * 1000)
+const shuffle = (_a:Array<any>) => {
+  const a = [..._a];
+  for (let i = a.length - 1; i > 0; i--) {
+    let j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]]; // Swap elements
+  }
+  return a;
+}
+const messages = shuffle([
+  'rhythm section compute',
+  'calibrating the pocket',
+  'dialing in the groove',
+  'locking in the feel',
+  'reading the room',
+  'laying it down',
+]);
+const messageIndex = ref(0)
+const currentMessage = computed(() => messages[messageIndex.value]!)
+const onMessageComplete = () => {
+  messageIndex.value = (messageIndex.value + 1) % messages.length
+}
 
 onMounted(async () => {
-  setTimeout(() => { textActive.value = true }, 80)
-
   if (!preferences.value.vibe.trim()) {
     router.replace('/')
     return
@@ -100,84 +114,35 @@ onMounted(async () => {
     </div>
 
     <!-- Loading state -->
-    <div v-else class="absolute inset-0 flex items-center justify-center gap-5 z-10">
-      <BedtimeLogo class="size-8 opacity-50 text-white logo-pulse" />
-      <div class="message-clip">
-        <div class="message" :class="{ 'message--active': textActive }">
-          <span
-            v-for="(char, i) in messageChars"
-            :key="i"
-            :class="char === ' ' ? 'letter-space' : 'letter'"
-            :style="char !== ' ' ? { animationDelay: letterDelays[i] + 'ms' } : {}"
-          >{{ char === ' ' ? ' ' : char }}</span>
-        </div>
-      </div>
+    <div v-else class="absolute inset-0 flex flex-col items-center justify-center gap-5 z-10">
+      <BedtimeLogo class="size-8 text-white/50"  style="transform: translateY(-100px)"/>
+      <AnimatedMessage
+        :message="currentMessage"
+        :loop="false"
+        size="1.5rem"
+        :duration="4000"
+        :delay="600"
+        @complete="onMessageComplete"
+        style="transform: translateY(-80px)"
+      />
     </div>
   </div>
 </template>
 
 <style scoped>
-/* ── Logo ─────────────────────────────────────────── */
-
-@keyframes logoPulse {
+/* @keyframes logoPulse {
   0%, 100% { opacity: 1; transform: translateY(-140px) scaleY(1.1)}
   50%       { opacity: 1; transform: translateY(-46px) scaleY(.6)}
+} */
+
+@keyframes logoPulse {
+  0%, 100% { opacity: .6; }
+  50%       { opacity: 0; }
 }
 
 .logo-pulse {
   transform: translateY(-50px);
   transform-origin: center;
-  animation: logoPulse 1.2s ease-in-out infinite;
-}
-
-/* ── Message letters ──────────────────────────────── */
-
-.message-clip {
-  overflow: hidden;
-  height: 1.6em;
-  display: flex;
-  align-items: flex-end;
-  transform: translateY(-50px);
-}
-
-.message {
-  display: flex;
-  align-items: flex-end;
-  position: relative;
-  transform: translateY(10px)
-}
-
-.letter {
-  display: inline-block;
-  transform: translateY(100%);
-  font-size: 1.5rem;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.7);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
-.letter-space {
-  display: inline-block;
-  width: 0.35em;
-}
-
-.message--active .letter {
-  /* animation: mole 2.8s ease-in-out infinite; */
-  animation: mole 5s ease-in-out infinite;
-}
-
-/* @keyframes mole {
-  0%   { transform: translateY(110%); }
-  15%  { transform: translateY(0); }
-  40%  { transform: translateY(0); }
-  55%  { transform: translateY(110%); }
-  100% { transform: translateY(110%); }
-} */
-@keyframes mole {
-  0%   { transform: translateY(100%); opacity: 0}
-  25%  { transform: translateY(0); opacity: 1}
-  75%  { transform: translateY(0); opacity: 1}
-  100% { transform: translateY(100%); opacity: 0}
+  animation: logoPulse 3.2s ease-in-out infinite;
 }
 </style>
