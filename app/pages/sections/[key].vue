@@ -80,6 +80,7 @@ watch(sectionKey, () => nextTick(scrollActivePillIntoView))
     <!-- Scrollable content -->
     <div class="flex-1 overflow-y-auto px-6 py-4">
       <div class="max-w-2xl mx-auto w-full">
+        <PrefChips class="mb-6" />
         <div v-if="sectionContent">
           <!-- Section title -->
           <div class="mb-6">

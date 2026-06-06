@@ -67,6 +67,13 @@ const autoResize = (e: Event) => {
       </div>
     </div>
 
+    <!-- Preference chips -->
+    <!-- <div class="shrink-0 px-4 pt-3 pb-1">
+      <div class="max-w-2xl mx-auto w-full">
+        <PrefChips />
+      </div>
+    </div> -->
+
     <!-- Messages -->
     <div ref="messagesEl" class="flex-1 overflow-y-auto px-4 py-4">
       <div class="max-w-2xl mx-auto w-full space-y-4">

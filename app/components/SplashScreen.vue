@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import AnimatedMessage from './AnimatedMessage.vue';
+
 const emit = defineEmits<{ done: [] }>()
 const textActive = ref(false)
 const sinking = ref(false)
@@ -17,7 +19,15 @@ onMounted(() => {
   setTimeout(() => { emit('done') },            4250 + taglineDelay)
 })
 
-const letters = 'Bedtime'.split('')
+const letters = 'Bedtime'.split('');
+const a = letters.map((_, i, a) => Math.abs(Math.round(i - a.length/2)));
+const aInv = a.map((v, i, a) => Math.abs(v - Math.floor(a.length / 2)));
+
+const incr = 60;
+const delay = 400;
+const letterDelays = ref<number[]>([]);
+// letterDelays.value = [delay + incr * 3, delay + incr * 2, delay + incr * 1, delay + 0, delay + incr * 1, delay + incr * 2, delay + incr * 3];
+letterDelays.value = a.map((v) => delay + incr * v)
 </script>
 
 <template>
@@ -38,12 +48,13 @@ const letters = 'Bedtime'.split('')
             fill="currentColor" />
         </svg>
 
+        
         <div class="wordmark" :class="{ 'wordmark--active': textActive }">
           <span
             v-for="(letter, i) in letters"
             :key="i"
             class="letter"
-            :style="`--i: ${i}`"
+            :style="{'--i': i, animationDelay: letterDelays[i] + 'ms'}"
           >{{ letter }}</span>
         </div>
 
@@ -189,8 +200,8 @@ const letters = 'Bedtime'.split('')
   line-height: 1;
 }
 .wordmark--active .letter {
-  animation: letterRise 380ms ease forwards;
-  animation-delay: calc(400ms + var(--i) * 100ms);
+  animation: letterRise 680ms ease-out forwards;
+  /* animation-delay: calc(400ms + var(--i) * 100ms); */
 }
 
 @keyframes letterRise {

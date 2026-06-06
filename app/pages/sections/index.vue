@@ -2,7 +2,6 @@
 import { SECTION_ORDER, SECTION_LABELS } from '~/types/chat'
 import type { SectionKey } from '~/types/chat'
 import { Card, CardHeader, CardTitle, CardDescription } from '~/components/ui/card'
-import { Badge } from '~/components/ui/badge'
 import { Button } from '~/components/ui/button'
 import { useSessionStore } from '~/composables/useSessionStore'
 import { ArrowLeft, ArrowRight, MessageCircle } from 'lucide-vue-next'
@@ -10,16 +9,11 @@ import { ArrowLeft, ArrowRight, MessageCircle } from 'lucide-vue-next'
 definePageMeta({ pageIndex: 1 })
 
 const router = useRouter()
-const { preferences, structuredResponse } = useSessionStore()
+const { structuredResponse } = useSessionStore()
 
 if (!structuredResponse.value) {
   navigateTo('/')
 }
-
-const prefChips = computed(() => {
-  const p = preferences.value
-  return [p.vibe, p.timeOfDay, p.movement, p.mood.length ? p.mood.join(', ') : ''].filter(s => s !== '')
-})
 
 const navigateToSection = (key: SectionKey) => router.push(`/sections/${key}`)
 </script>
@@ -35,11 +29,7 @@ const navigateToSection = (key: SectionKey) => router.push(`/sections/${key}`)
       </div>
 
       <!-- Preference chips -->
-      <div v-if="prefChips.length" class="flex flex-wrap gap-2 mb-6">
-        <Badge v-for="chip in prefChips" :key="chip" variant="secondary" class="text-xs border-0" style="background-color: #00000055">
-          {{ chip }}
-        </Badge>
-      </div>
+      <PrefChips class="mb-6" />
 
       <!-- Section cards -->
       <div v-if="structuredResponse" class="space-y-3">
