@@ -39,13 +39,8 @@ const toggleCustomGenre = () => {
 const dawOptions = ['Ableton', 'Logic Pro', 'FL Studio', 'GarageBand', 'Reason', 'Cubase', 'Other']
 const instrumentOptions = ['Electric Guitar', 'Bass', 'Piano/Keys', 'Synths', 'Drum Machine', 'Vocals']
 
-const toggleInstrument = (instrument: string) => {
-  const idx = preferences.value.instruments.indexOf(instrument)
-  if (idx === -1) {
-    preferences.value.instruments = [...preferences.value.instruments, instrument]
-  } else {
-    preferences.value.instruments = preferences.value.instruments.filter(i => i !== instrument)
-  }
+const selectInstrument = (instrument: string) => {
+  preferences.value.instrument = preferences.value.instrument === instrument ? null : instrument
 }
 
 const toggleMood = (mood: string) => {
@@ -63,7 +58,6 @@ const canSubmit = computed(() =>
   preferences.value.movement !== '' &&
   (preferences.value.mood.length > 0 || customMoodText.value.trim() !== '') &&
   (selectedGenre.value !== '' || (showCustomGenre.value && customGenreText.value.trim() !== '')) &&
-  (preferences.value.instruments.length > 0) &&
   preferences.value.daw !== ''
 )
 
@@ -89,8 +83,30 @@ const handleSubmit = () => {
   router.push('/loading')
 }
 
+// ── Intro blurb ────────────────────────────────────────────────────────────
+const INTRO_KEY = 'bedtime_skip_intro'
+const showIntro = ref(false)
+const neverShow = ref(false)
+
+const dismissIntro = () => {
+  if (neverShow.value) {
+    try {
+      localStorage.setItem(INTRO_KEY, '1')
+    } catch {}
+  }
+  showIntro.value = false
+}
+
+onMounted(() => {
+  try {
+    if (!localStorage.getItem(INTRO_KEY)) {
+      showIntro.value = true
+    }
+  } catch {}
+})
+
 // ── Progressive disclosure ─────────────────────────────────────────────────
-// Sections: 0=Moment, 1=Time, 2=Movement, 3=Mood, 4=Genres, 5=Instruments, 6=DAW
+// Sections: 0=Moment, 1=Time, 2=Movement, 3=Mood, 4=Genres, 5=DAW, 6=Instruments
 // Initialised synchronously so returning users see all sections without animation.
 const sectionVisible = ref([
   true,                                                              // 0: Moment — always visible
@@ -98,8 +114,8 @@ const sectionVisible = ref([
   !!preferences.value.timeOfDay,                                     // 2: Movement
   !!preferences.value.movement,                                      // 3: Mood
   preferences.value.mood.length > 0,                                 // 4: Genres
-  !!(selectedGenre.value || customGenreText.value.trim()),           // 5: Instruments
-  preferences.value.instruments.length > 0,                          // 6: DAW
+  !!(selectedGenre.value || customGenreText.value.trim()),           // 5: DAW
+  !!preferences.value.daw,                                           // 6: Instruments — only reveal after DAW is answered
 ])
 
 const sectionRefs = ref<(HTMLElement | null)[]>(Array(7).fill(null))
@@ -121,7 +137,7 @@ watch([() => preferences.value.mood, customMoodText], () => {
 watch([selectedGenre, customGenreText], () => {
   if (selectedGenre.value || customGenreText.value.trim()) revealSection(5)
 })
-watch(() => preferences.value.instruments, v => { if (v.length > 0) revealSection(6) })
+watch(() => preferences.value.daw, v => { if (v) revealSection(6) })
 </script>
 
 <template>
@@ -129,12 +145,41 @@ watch(() => preferences.value.instruments, v => { if (v.length > 0) revealSectio
     <!-- Scrollable content -->
     <div class="flex-1 overflow-y-auto px-6 pt-10 pb-4">
       <div class="max-w-2xl mx-auto w-full">
-        <div class="flex items-center gap-3 mb-10">
-          <BedtimeLogo class="size-7 opacity-60 text-white" />
-          <span class="text-3xl font-medium tracking-wide">Bedtime</span>
-        </div>
 
-        <form @submit.prevent="handleSubmit" class="flex flex-col">
+        <!-- Intro blurb -->
+        <Transition name="section-reveal">
+          <div v-if="showIntro" class="flex flex-col gap-6">
+            <div class="flex items-center gap-3 mb-2">
+              <BedtimeLogo class="size-7 opacity-60 text-white" />
+              <span class="text-3xl font-medium tracking-wide">Bedtime</span>
+            </div>
+            <p class="text-white/70 leading-relaxed">
+              Bedtime is your musical coach — like having a producer in the room to reel in your sound. Set the vibe, then Bedtime will come up with ideas of moments, moods, scenes, plus tips for your DAW that inspire and get you grooving…
+            </p>
+            <div class="flex items-center gap-3">
+              <input
+                id="skip-intro"
+                v-model="neverShow"
+                type="checkbox"
+                class="w-4 h-4 rounded border border-white/20 bg-white/5 cursor-pointer checked:bg-white checked:border-white"
+              />
+              <label for="skip-intro" class="text-sm text-white/70 cursor-pointer">
+                Cool, don't show this again
+              </label>
+            </div>
+            <Button @click="dismissIntro" class="w-full mt-4">Got it</Button>
+          </div>
+        </Transition>
+
+        <!-- Form -->
+        <Transition name="section-reveal">
+          <div v-if="!showIntro" class="flex flex-col">
+            <div class="flex items-center gap-3 mb-10">
+              <BedtimeLogo class="size-7 opacity-60 text-white" />
+              <span class="text-3xl font-medium tracking-wide">Bedtime</span>
+            </div>
+
+            <form @submit.prevent="handleSubmit" class="flex flex-col">
 
           <!-- 0: Moment — always visible -->
           <div class="flex flex-col gap-2 mb-8">
@@ -282,37 +327,11 @@ watch(() => preferences.value.instruments, v => { if (v.length > 0) revealSectio
             </div>
           </Transition>
 
-          <!-- 5: Instruments -->
+          <!-- 5: DAW -->
           <Transition name="section-reveal">
             <div
               v-if="sectionVisible[5]"
               :ref="el => sectionRefs[5] = el as HTMLElement | null"
-              class="flex flex-col gap-3 mb-8"
-            >
-              <label class="text-sm font-medium text-white/70">
-                Got your hands on anything in particular? <span class="text-white/50 font-normal">Select one or more</span>
-              </label>
-              <div class="flex flex-wrap gap-2">
-                <Button
-                  v-for="option in instrumentOptions"
-                  :key="option"
-                  type="button"
-                  :variant="preferences.instruments.includes(option) ? 'default' : 'outline'"
-                  size="sm"
-                  class="rounded-full"
-                  @click="toggleInstrument(option)"
-                >
-                  {{ option }}
-                </Button>
-              </div>
-            </div>
-          </Transition>
-
-          <!-- 6: DAW -->
-          <Transition name="section-reveal">
-            <div
-              v-if="sectionVisible[6]"
-              :ref="el => sectionRefs[6] = el as HTMLElement | null"
               class="flex flex-col gap-3 mb-8"
             >
               <label class="text-sm font-medium text-white/70">
@@ -334,7 +353,35 @@ watch(() => preferences.value.instruments, v => { if (v.length > 0) revealSectio
             </div>
           </Transition>
 
-        </form>
+          <!-- 6: Instruments -->
+          <Transition name="section-reveal">
+            <div
+              v-if="sectionVisible[6]"
+              :ref="el => sectionRefs[6] = el as HTMLElement | null"
+              class="flex flex-col gap-3 mb-8"
+            >
+              <label class="text-sm font-medium text-white/70">
+                Got your hands on anything in particular? <span class="text-white/50 font-normal">Select one (optional)</span>
+              </label>
+              <div class="flex flex-wrap gap-2">
+                <Button
+                  v-for="option in instrumentOptions"
+                  :key="option"
+                  type="button"
+                  :variant="preferences.instrument === option ? 'default' : 'outline'"
+                  size="sm"
+                  class="rounded-full"
+                  @click="selectInstrument(option)"
+                >
+                  {{ option }}
+                </Button>
+              </div>
+            </div>
+          </Transition>
+
+            </form>
+          </div>
+        </Transition>
 
       </div>
     </div>

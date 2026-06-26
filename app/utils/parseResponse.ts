@@ -28,7 +28,7 @@ export function parseStructuredResponse(content: string): StructuredResponse | n
   // Try extracting JSON from markdown code blocks
   const jsonMatch = trimmed.match(/```(?:json)?\s*([\s\S]*?)\s*```/)
   if (jsonMatch) {
-    const fromBlock = tryParse(jsonMatch[1])
+    const fromBlock = tryParse(jsonMatch[1] ?? '')
     if (fromBlock) return fromBlock
   }
 

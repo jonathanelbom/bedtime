@@ -18,6 +18,7 @@ definePageMeta({ pageIndex: 2 })
 const route = useRoute()
 const router = useRouter()
 const { structuredResponse } = useSessionStore()
+const isDev = import.meta.dev
 
 const sectionKey = computed(() => route.params.key as SectionKey)
 
@@ -30,9 +31,12 @@ const sectionContent = computed<SectionContent | null>(() => {
   return structuredResponse.value.sections[sectionKey.value] || null
 })
 
-const currentIndex = computed(() => SECTION_ORDER.indexOf(sectionKey.value))
-const prevSection = computed(() => currentIndex.value > 0 ? SECTION_ORDER[currentIndex.value - 1] : null)
-const nextSection = computed(() => currentIndex.value < SECTION_ORDER.length - 1 ? SECTION_ORDER[currentIndex.value + 1] : null)
+const availableSections = computed(() =>
+  SECTION_ORDER.filter(key => structuredResponse.value?.sections[key])
+)
+const currentIndex = computed(() => availableSections.value.indexOf(sectionKey.value))
+const prevSection = computed(() => currentIndex.value > 0 ? availableSections.value[currentIndex.value - 1] : null)
+const nextSection = computed(() => currentIndex.value < availableSections.value.length - 1 ? availableSections.value[currentIndex.value + 1] : null)
 
 const navScrollRef = ref<HTMLDivElement | null>(null)
 const activePillRef = ref<HTMLButtonElement | null>(null)
@@ -62,7 +66,7 @@ watch(sectionKey, () => nextTick(scrollActivePillIntoView))
       <!-- Section tabs: scroll freely to the right viewport edge -->
       <div ref="navScrollRef" class="flex gap-2 overflow-x-auto no-scrollbar pt-1 pb-1 pr-4 pl-1 -mr-6">
         <button
-          v-for="key in SECTION_ORDER"
+          v-for="key in availableSections"
           :key="key"
           :ref="key === sectionKey ? (el) => { activePillRef = el as HTMLButtonElement } : undefined"
           @click="router.push(`/sections/${key}`)"
@@ -91,7 +95,7 @@ watch(sectionKey, () => nextTick(scrollActivePillIntoView))
                   {{ sectionContent.title || SECTION_LABELS[sectionKey] }}
                 </h1>
               </div>
-              <Dialog>
+              <Dialog v-if="isDev">
                 <DialogTrigger as-child>
                   <Button variant="ghost" size="sm" class="text-white/30 font-mono text-xs shrink-0 -mr-2">
                     { }

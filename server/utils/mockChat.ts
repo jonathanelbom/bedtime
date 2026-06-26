@@ -36,7 +36,7 @@ const MOCK_RESPONSE = JSON.stringify({
         'In Scale MIDI effect, use Minor Pentatonic or Dorian. Lock your keyboard to it. This removes wrong notes from the equation entirely — just play by feel.',
       reference: null,
     },
-    guitar: {
+    instrument: {
       title: 'Human Air in the Machine',
       feel: "One riff, played once, recorded twice. The second take should feel slightly more tired than the first — that's the one you use. Don't fix the timing. The humanness is the point.",
       ableton_tip:

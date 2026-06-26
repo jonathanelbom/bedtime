@@ -1,8 +1,12 @@
-import OpenAI from 'openai'
-import { buildMetaPrompt } from '../utils/metaPrompt'
-import { validatePrompt } from '../utils/validatePrompt'
-import { normalizeUserContext, type RawFormInput } from '../utils/normalizeUserContext'
-import { RESPONSE_FORMAT } from '../utils/responseFormat'
+import OpenAI from "openai";
+import { buildMetaPrompt } from "../utils/metaPrompt";
+import { validatePrompt } from "../utils/validatePrompt";
+import {
+  normalizeUserContext,
+  type RawFormInput,
+} from "../utils/normalizeUserContext";
+import { RESPONSE_FORMAT } from "../utils/responseFormat";
+const isDev = process.env.NODE_ENV === "development";
 
 const MOCK_PROMPT = `You are a rhythm-section consultant for modern pop and electronic music.
 
@@ -36,66 +40,71 @@ One riff, played once, recorded twice. The second take should feel slightly more
 
 ## WHAT TO AVOID
 
-Busy transitions. More than one lead element at a time. Fills that announce themselves. Any element that wants to be the main character. Reverb that makes things feel far away when they should feel present.`
+Busy transitions. More than one lead element at a time. Fills that announce themselves. Any element that wants to be the main character. Reverb that makes things feel far away when they should feel present.`;
 
 interface GeneratePromptBody {
-  preferences: RawFormInput
+  preferences: RawFormInput;
 }
 
 export default defineEventHandler(async (event) => {
-  const config = useRuntimeConfig()
+  const config = useRuntimeConfig();
 
-  const body = await readBody<GeneratePromptBody>(event)
+  const body = await readBody<GeneratePromptBody>(event);
 
   if (!body.preferences) {
     throw createError({
       statusCode: 400,
-      statusMessage: 'preferences is required',
-    })
+      statusMessage: "preferences is required",
+    });
   }
 
-  if (config.mockAi === 'true') {
-    await new Promise(resolve => setTimeout(resolve, 2500))
-    return { prompt: MOCK_PROMPT + RESPONSE_FORMAT }
+  if (config.mockAi === "true") {
+    await new Promise((resolve) => setTimeout(resolve, 2500));
+    return { prompt: MOCK_PROMPT + RESPONSE_FORMAT };
   }
 
   if (!config.openaiApiKey) {
     throw createError({
       statusCode: 500,
-      statusMessage: 'OpenAI API key is not configured',
-    })
+      statusMessage: "OpenAI API key is not configured",
+    });
   }
 
-  const context = normalizeUserContext(body.preferences)
-  const openai = new OpenAI({ apiKey: config.openaiApiKey })
-  const metaPrompt = buildMetaPrompt(context)
+  const context = normalizeUserContext(body.preferences);
+  const openai = new OpenAI({ apiKey: config.openaiApiKey });
+  const metaPrompt = buildMetaPrompt(context);
 
-  console.log('[server: preferences received]', JSON.stringify(body.preferences, null, 2))
-  console.log('[server: meta-prompt]', metaPrompt)
+  if (isDev)
+    console.log(
+      "[server: preferences received]",
+      JSON.stringify(body.preferences, null, 2),
+    );
+  if (isDev) console.log("[server: meta-prompt]", metaPrompt);
 
   async function generate(): Promise<string> {
     const completion = await openai.chat.completions.create({
-      model: 'gpt-4o',
-      messages: [{ role: 'user', content: metaPrompt }],
+      model: "gpt-4o",
+      messages: [{ role: "user", content: metaPrompt }],
       stream: false,
-    })
-    return completion.choices[0]?.message?.content ?? ''
+    });
+    return completion.choices[0]?.message?.content ?? "";
   }
 
-  let prompt = await generate()
+  let prompt = await generate();
 
   if (!validatePrompt(prompt)) {
-    prompt = await generate()
+    prompt = await generate();
     if (!validatePrompt(prompt)) {
       throw createError({
         statusCode: 500,
-        statusMessage: 'Failed to generate a valid system prompt after two attempts',
-      })
+        statusMessage:
+          "Failed to generate a valid system prompt after two attempts",
+      });
     }
   }
 
-  prompt = prompt + RESPONSE_FORMAT
+  prompt = prompt + RESPONSE_FORMAT;
 
-  console.log('[server: generated-system-prompt]', prompt)
-  return { prompt }
-})
+  if (isDev) console.log("[server: generated-system-prompt]", prompt);
+  return { prompt };
+});
