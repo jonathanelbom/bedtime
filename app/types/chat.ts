@@ -11,7 +11,7 @@ export type SectionKey =
   | 'bass'
   | 'chords'
   | 'keys_scales'
-  | 'guitar'
+  | 'instrument'
   | 'avoid'
 
 export interface StructuredSections {
@@ -20,7 +20,7 @@ export interface StructuredSections {
   bass?: SectionContent
   chords?: SectionContent
   keys_scales?: SectionContent
-  guitar?: SectionContent
+  instrument?: SectionContent
   avoid?: SectionContent
 }
 
@@ -52,7 +52,7 @@ export const SECTION_ORDER: SectionKey[] = [
   'bass',
   'chords',
   'keys_scales',
-  'guitar',
+  'instrument',
   'avoid',
 ]
 
@@ -62,6 +62,6 @@ export const SECTION_LABELS: Record<SectionKey, string> = {
   bass: 'Bass',
   chords: 'Chords',
   keys_scales: 'Keys & Scales',
-  guitar: 'Guitar',
+  instrument: 'Hands-on',
   avoid: 'What to Avoid',
 }

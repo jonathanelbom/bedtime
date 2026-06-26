@@ -48,7 +48,7 @@ export function validatePrompt(prompt: string): boolean {
   ]
 
   for (let i = 1; i < positions.length; i++) {
-    if (positions[i] <= positions[i - 1]) return false
+    if ((positions[i] ?? 0) <= (positions[i - 1] ?? 0)) return false
   }
 
   return true

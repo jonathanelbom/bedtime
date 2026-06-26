@@ -42,7 +42,7 @@ const PALETTES = {
     bass:        '#1d1a2e', // deep indigo-plum
     chords:      '#1b1a24', // cool charcoal-violet
     keys_scales: '#162030', // dark slate-teal
-    guitar:      '#20191e', // dark rose-gray
+    instrument:      '#20191e', // dark rose-gray
     avoid:       '#14102a', // near-black purple
     chat:        '#101820', // deep cool-dark
     tealDark:    '#1a2a30',
@@ -56,7 +56,7 @@ const PALETTES = {
   //   bass:        '#1d1a2e', // deep indigo-plum
   //   chords:      '#1b1a24', // cool charcoal-violet
   //   keys_scales: '#162030', // dark slate-teal
-  //   guitar:      '#20191e', // dark rose-gray
+  //   instrument:      '#20191e', // dark rose-gray
   //   avoid:       '#14102a', // near-black purple
   //   chat:        '#101820', // deep cool-dark
   //   tealDark:    '#1a2a30',
@@ -71,7 +71,7 @@ const PALETTES = {
     bass:        '#150a30', // vivid indigo
     chords:      '#14102a', // deep violet
     keys_scales: '#0a1828', // deep slate
-    guitar:      '#241020', // vivid rose-plum
+    instrument:      '#241020', // vivid rose-plum
     avoid:       '#100628', // near-black violet
     chat:        '#0a1020', // deep near-black blue
     tealDark:    '#0a1e28',
@@ -86,14 +86,14 @@ const PALETTES = {
     bass:        '#110830', // bold indigo
     chords:      '#100830', // dark violet
     keys_scales: '#081422', // bold slate
-    guitar:      '#220e1e', // bold rose
+    instrument:      '#220e1e', // bold rose
     avoid:       '#0c0522', // deep black-purple
     chat:        '#080e1c', // deep near-black blue
     tealDark:    '#081e28',
     mauveDark:   '#180630',
   },
   // D: jewel-toned, warm/cool alternating — every adjacent page is a jolt, not a spectrum step
-  //    nav order: setup(pink) → overview(cobalt) → tempo(orange) → drums(emerald) → bass(crimson) → chords(teal) → keys(violet) → guitar(amber) → avoid(indigo)
+  //    nav order: setup(pink) → overview(cobalt) → tempo(orange) → drums(emerald) → bass(crimson) → chords(teal) → keys(violet) → instrument(amber) → avoid(indigo)
   vivid: {
     setup:       '#36042e', // vivid hot pink       H~310  warm
     overview:    '#031e44', // vivid cobalt         H~220  cool  (+90°)
@@ -102,7 +102,7 @@ const PALETTES = {
     bass:        '#3c0408', // vivid crimson        H~358  warm  (+140°)
     chords:      '#032e2a', // vivid teal           H~185  cool  (+187°)
     keys_scales: '#1a0440', // vivid violet         H~268  cool  (+83°)
-    guitar:      '#341a04', // vivid amber          H~35   warm  (+127°)
+    instrument:      '#341a04', // vivid amber          H~35   warm  (+127°)
     avoid:       '#080440', // vivid indigo         H~252  cool  (+143°)
     chat:        '#04081e', // vivid midnight       H~232  cool
     tealDark:    '#032e2a',
@@ -119,7 +119,7 @@ export const SECTION_COLORS: Record<SectionKey, string> = {
   bass:        PAGE_COLORS.bass,
   chords:      PAGE_COLORS.chords,
   keys_scales: PAGE_COLORS.keys_scales,
-  guitar:      PAGE_COLORS.guitar,
+  instrument:      PAGE_COLORS.instrument,
   avoid:       PAGE_COLORS.avoid,
 }
 

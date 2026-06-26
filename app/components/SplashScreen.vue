@@ -20,14 +20,14 @@ onMounted(() => {
 })
 
 const letters = 'Bedtime'.split('');
-const a = letters.map((_, i, a) => Math.abs(Math.round(i - a.length/2)));
-const aInv = a.map((v, i, a) => Math.abs(v - Math.floor(a.length / 2)));
+// const a = letters.map((_, i, a) => Math.abs(Math.round(i - a.length/2)));
+// const aInv = a.map((v, i, a) => Math.abs(v - Math.floor(a.length / 2)));
 
 const incr = 60;
 const delay = 400;
 const letterDelays = ref<number[]>([]);
 // letterDelays.value = [delay + incr * 3, delay + incr * 2, delay + incr * 1, delay + 0, delay + incr * 1, delay + incr * 2, delay + incr * 3];
-letterDelays.value = a.map((v) => delay + incr * v)
+letterDelays.value = letters.map((_, i) => delay + incr * i)
 </script>
 
 <template>

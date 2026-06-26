@@ -7,7 +7,7 @@ export interface Preferences {
   movement: string
   mood: string[]
   genres: string
-  instruments: string[]
+  instrument: string | null
   daw: string
   references: string
 }
@@ -18,7 +18,7 @@ const emptyPreferences = (): Preferences => ({
   movement: '',
   mood: [],
   genres: '',
-  instruments: [],
+  instrument: null,
   daw: '',
   references: '',
 })
@@ -41,9 +41,9 @@ export const useSessionStore = () => {
       c.movement !== p.movement ||
       JSON.stringify(c.mood) !== JSON.stringify(p.mood) ||
       c.genres !== p.genres ||
+      c.instrument !== p.instrument ||
       c.daw !== p.daw ||
-      c.references !== p.references ||
-      JSON.stringify(c.instruments) !== JSON.stringify(p.instruments)
+      c.references !== p.references
     )
   })
 
@@ -53,7 +53,7 @@ export const useSessionStore = () => {
     if (prefs.movement) parts.push(`Movement: ${prefs.movement}.`)
     if (prefs.mood.length) parts.push(`Mood: ${prefs.mood.join(', ')}.`)
     if (prefs.genres) parts.push(`Genres: ${prefs.genres}.`)
-    if (prefs.instruments.length) parts.push(`Instruments: ${prefs.instruments.join(', ')}.`)
+    if (prefs.instrument) parts.push(`Instrument: ${prefs.instrument}.`)
     if (prefs.daw) parts.push(`DAW: ${prefs.daw}.`)
     if (prefs.references) parts.push(`References: ${prefs.references}.`)
     return parts.join(' ')
@@ -62,7 +62,6 @@ export const useSessionStore = () => {
   const commit = () => {
     committedPreferences.value = {
       ...preferences.value,
-      instruments: [...preferences.value.instruments],
       mood: [...preferences.value.mood],
     }
   }

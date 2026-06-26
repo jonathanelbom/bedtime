@@ -52,8 +52,8 @@ You MUST respond with valid JSON only. No markdown, no explanation text before o
       "ableton_tip": "...",
       "reference": "..."
     },
-    "guitar": {
-      "title": "A short evocative subtitle for the expressive texture section — authored to fit this sonic world",
+    "instrument": {
+      "title": "A short evocative subtitle for the instrument section — authored to fit this sonic world",
       "feel": "...",
       "ableton_tip": "...",
       "reference": "..."

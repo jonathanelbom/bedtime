@@ -10,6 +10,7 @@ definePageMeta({ pageIndex: 1 })
 
 const router = useRouter()
 const { structuredResponse } = useSessionStore()
+const isDev = import.meta.dev
 
 if (!structuredResponse.value) {
   navigateTo('/')
@@ -33,9 +34,9 @@ const navigateToSection = (key: SectionKey) => router.push(`/sections/${key}`)
 
       <!-- Section cards -->
       <div v-if="structuredResponse" class="space-y-3">
+        <template v-for="key in SECTION_ORDER" :key="key">
         <Card
-          v-for="key in SECTION_ORDER"
-          :key="key"
+          v-if="structuredResponse.sections[key]"
           class="cursor-pointer bg-white/5 border-white/10 hover:bg-white/10 transition-colors"
           @click="navigateToSection(key)"
         >
@@ -48,9 +49,10 @@ const navigateToSection = (key: SectionKey) => router.push(`/sections/${key}`)
             </CardDescription>
           </CardHeader>
         </Card>
+        </template>
 
         <!-- Debug JSON -->
-        <details class="mt-4">
+        <details v-if="isDev" class="mt-4">
           <summary class="text-white/30 text-xs cursor-pointer">View Raw JSON</summary>
           <pre class="mt-2 text-xs text-white/30 bg-black/20 p-4 rounded-lg overflow-auto">{{ JSON.stringify(structuredResponse, null, 2) }}</pre>
         </details>

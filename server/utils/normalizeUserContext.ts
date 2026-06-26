@@ -52,7 +52,7 @@ export interface RawFormInput {
   movement: string
   mood: string[]
   genres: string
-  instruments: string[]
+  instrument: string | null
   daw: string
   references: string
 }
@@ -109,15 +109,15 @@ function inferPrimaryInstrument(instruments: string[]): string | null {
   const lower = instruments.map(i => i.toLowerCase())
   for (const candidate of INSTRUMENT_PRIORITY) {
     if (lower.some(i => i.includes(candidate))) {
-      return instruments[lower.findIndex(i => i.includes(candidate))]
+      return instruments[lower.findIndex(i => i.includes(candidate))] ?? null
     }
   }
-  return instruments[0]
+  return instruments[0] ?? null
 }
 
 export function normalizeUserContext(raw: RawFormInput): NormalizedUserContext {
   const genres = splitAndClean(raw.genres)
-  const instruments = [...new Set(raw.instruments.map(i => i.trim()).filter(i => i !== ''))]
+  const instruments = raw.instrument ? [raw.instrument.trim()] : []
   const artists = splitAndClean(raw.references)
   const daw = normalizeDaw(raw.daw)
 
