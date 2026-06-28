@@ -1,7 +1,5 @@
 export interface NormalizedUserContext {
   profile: {
-    assistant_name: string | null
-    creator_type: string | null
     creative_goal: string | null
   }
   sound_profile: {
@@ -130,8 +128,6 @@ export function normalizeUserContext(raw: RawFormInput): NormalizedUserContext {
 
   return {
     profile: {
-      assistant_name: null,
-      creator_type: null,
       creative_goal: normStr(raw.vibe),
     },
     sound_profile: {

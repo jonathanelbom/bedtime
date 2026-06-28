@@ -146,10 +146,3 @@ The four inputs are combined into a single natural-language user message:
 I want a song about: [vibe]. Time of day: [timeOfDay]. Movement: [movement]. Mood: [mood].
 ```
 
----
-
-## Connection to Chat (What Comes Next)
-
-The structured sections phase is intentionally a **one-shot output** — the user gets the full picture upfront without going back and forth. But after reviewing the sections, users often have follow-up questions: "what does that bass feel actually sound like?", "can I make the drums more minimal?"
-
-This is where the continuing chat feature picks up — see `CHAT_MVP_PLAN.md`. The structured response becomes context for a conversational follow-up, giving the best of both: scannable structure first, open conversation after.
