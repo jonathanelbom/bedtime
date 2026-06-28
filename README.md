@@ -20,7 +20,7 @@ This is a portfolio piece showcasing a non-trivial AI product: a two-stage pipel
    - First, `POST /api/generate-prompt` synthesizes your preferences into a fully custom AI persona — a generated name, voice calibration (derived from genre + time + movement + mood), and inferred reference universe — then returns this as a personalized system prompt.
    - Then, `POST /api/chat` uses that persona as the system prompt and streams the AI response as raw JSON tokens while you watch rotating groove-flavored loading messages ("calibrating the pocket", "locking in the feel", etc.).
 
-3. **Explore Results** (`/sections`) — A grid of 7 cards, one for each section (tempo, drums, bass, chords, keys_scales, guitar, avoid). Each shows the AI-generated title and a preview of the feel.
+3. **Explore Results** (`/sections`) — A grid of 7 cards, one for each section (tempo, drums, bass, chords, keys_scales, hands-on, avoid). Each shows the AI-generated title and a preview of the feel.
 
 4. **Deep Dive** (`/sections/[key]`) — Full detail for each section: feel (movement language), Ableton tip (concrete DAW action), and optionally a song reference. Pill-based navigation lets you jump between sections.
 
@@ -84,15 +84,17 @@ server/
   utils/
     metaPrompt.ts           # Meta-prompt that instructs GPT-4o to generate custom persona
     normalizeUserContext.ts # Maps raw form input into structured context for meta-prompt
+    chatSystemPrompt.ts     # System prompt used by chat endpoint
     mockChat.ts             # Mock streaming fixtures
     responseFormat.ts       # Response validation & shape
+    systemPrompt.ts         # Legacy system prompt definition
+    validatePrompt.ts       # Prompt validation utilities
 
 docs/
-  APP_ARCHITECTURE_PLAN.md
-  STRUCTURED_RESPONSE_PLAN.md
-  CHAT_MVP_PLAN.md
-  system-prompt.md          # Full persona spec
-  playlist.md               # Reference tracks + notes
+  DECISIONS.md                      # Architectural decision log
+  STRUCTURED_RESPONSE_PLAN.md       # AI output design & schema
+  USER_CONTEXT_SCHEMA.md            # Normalized user context specification
+  USER_INPUT_CONFIG_DECISIONS.md    # Form field decisions & rationale
 ```
 
 ---
