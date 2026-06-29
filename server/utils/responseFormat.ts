@@ -25,43 +25,43 @@ You MUST respond with valid JSON only. No markdown, no explanation text before o
     "tempo": {
       "title": "A short evocative subtitle for tempo — authored to fit this sonic world, not a default label",
       "feel": "Feel-based direction using metaphor and movement...",
-      "ableton_tip": "Concrete production tip relevant to the user's DAW...",
+      "daw_tip": "Concrete production tip relevant to the user's DAW...",
       "reference": "Optional song reference or null"
     },
     "drums": {
       "title": "A short evocative subtitle for drums — authored to fit this sonic world",
       "feel": "...",
-      "ableton_tip": "...",
+      "daw_tip": "...",
       "reference": "..."
     },
     "bass": {
       "title": "A short evocative subtitle for bass — authored to fit this sonic world",
       "feel": "...",
-      "ableton_tip": "...",
+      "daw_tip": "...",
       "reference": "..."
     },
     "chords": {
       "title": "A short evocative subtitle for chords — authored to fit this sonic world",
       "feel": "...",
-      "ableton_tip": "...",
+      "daw_tip": "...",
       "reference": "..."
     },
     "keys_scales": {
       "title": "A short evocative subtitle for keys/scales — authored to fit this sonic world",
       "feel": "Talk emotional ranges, no theory framing...",
-      "ableton_tip": "...",
+      "daw_tip": "...",
       "reference": "..."
     },
     "instrument": {
       "title": "A short evocative subtitle for the instrument section — authored to fit this sonic world",
       "feel": "...",
-      "ableton_tip": "...",
+      "daw_tip": "...",
       "reference": "..."
     },
     "avoid": {
       "title": "What to Avoid",
       "feel": "Concise bullets of things to stay away from...",
-      "ableton_tip": "...",
+      "daw_tip": "...",
       "reference": null
     }
   }

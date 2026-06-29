@@ -1,7 +1,7 @@
 export interface SectionContent {
   title: string
   feel: string
-  ableton_tip: string
+  daw_tip: string
   reference?: string | null
 }
 

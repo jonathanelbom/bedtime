@@ -25,7 +25,7 @@ export const useContinuingChat = () => {
       lines.push('')
       lines.push(`${SECTION_LABELS[key].toUpperCase()} — ${section.title}`)
       lines.push(`Feel: ${section.feel}`)
-      lines.push(`Ableton tip: ${section.ableton_tip}`)
+      lines.push(`DAW tip: ${section.daw_tip}`)
       if (section.reference) lines.push(`Reference: ${section.reference}`)
     }
     return lines.join('\n')

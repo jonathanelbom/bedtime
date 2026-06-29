@@ -22,7 +22,7 @@ This is a portfolio piece showcasing a non-trivial AI product: a two-stage pipel
 
 3. **Explore Results** (`/sections`) — A grid of 7 cards, one for each section (tempo, drums, bass, chords, keys_scales, hands-on, avoid). Each shows the AI-generated title and a preview of the feel.
 
-4. **Deep Dive** (`/sections/[key]`) — Full detail for each section: feel (movement language), Ableton tip (concrete DAW action), and optionally a song reference. Pill-based navigation lets you jump between sections.
+4. **Deep Dive** (`/sections/[key]`) — Full detail for each section: feel (movement language), DAW tip (concrete DAW action), and optionally a song reference. Pill-based navigation lets you jump between sections.
 
 ---
 

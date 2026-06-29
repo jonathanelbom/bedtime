@@ -124,10 +124,10 @@ watch(sectionKey, () => nextTick(scrollActivePillIntoView))
 
             <Card class="bg-white/5 border-white/10 gap-2">
               <CardHeader>
-                <CardTitle class="text-base font-medium text-white/50">Ableton Tip</CardTitle>
+                <CardTitle class="text-base font-medium text-white/50">DAW Tip</CardTitle>
               </CardHeader>
               <CardContent>
-                <p class="text-white/90 leading-relaxed">{{ sectionContent.ableton_tip }}</p>
+                <p class="text-white/90 leading-relaxed">{{ sectionContent.daw_tip }}</p>
               </CardContent>
             </Card>
 

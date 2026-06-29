@@ -61,7 +61,7 @@ The AI always responds with JSON only — never markdown. Two shapes:
 
 // Full guidance:
 { type: "response", sections: { tempo, drums, bass, chords, keys_scales, guitar, avoid } }
-// Each section: { title, feel, ableton_tip, reference?: string | null }
+// Each section: { title, feel, daw_tip, reference?: string | null }
 ```
 
 Parsing is in `app/utils/parseResponse.ts` with multiple fallbacks (direct parse → jsonrepair → extract from markdown blocks).
