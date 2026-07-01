@@ -90,7 +90,21 @@ export default defineEventHandler(async (event) => {
     return completion.choices[0]?.message?.content ?? "";
   }
 
-  let prompt = await generate();
+  let prompt: string;
+  try {
+    prompt = await generate();
+  } catch (err: any) {
+    const code = err?.error?.code ?? err?.code;
+    const status = err?.status ?? err?.statusCode;
+    console.error(`[generate-prompt] OpenAI error — status: ${status}, code: ${code}, message: ${err?.message}`);
+    if (code === "insufficient_quota") {
+      throw createError({ statusCode: 402, statusMessage: "OpenAI quota exhausted — add credits to your account." });
+    }
+    if (status === 429) {
+      throw createError({ statusCode: 429, statusMessage: "Rate limit reached. Please try again in a moment." });
+    }
+    throw err;
+  }
 
   if (!validatePrompt(prompt)) {
     prompt = await generate();

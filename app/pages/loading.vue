@@ -57,8 +57,16 @@ onMounted(async () => {
       body: { preferences: preferences.value },
     });
     generatedSystemPrompt.value = result.prompt;
-  } catch {
-    error.value = "Something went wrong. Please try again.";
+  } catch (err: any) {
+    const status = err?.statusCode ?? err?.status;
+    if (status === 402) {
+      error.value =
+        "The token jar is empty. We're refilling it — check back soon.";
+    } else if (status === 429) {
+      error.value = "Too many vibes at once. Give it a moment and try again.";
+    } else {
+      error.value = "Something misfired in the machine. Please try again.";
+    }
     return;
   }
 
@@ -104,11 +112,13 @@ onMounted(async () => {
       }
       structuredResponse.value = parsed;
     } else {
-      error.value = "Failed to parse response. Please try again.";
+      // failed to parse response
+      error.value =
+        "We heard something but couldn't make it out. Please try again.";
       return;
     }
   } catch {
-    error.value = "Something went wrong. Please try again.";
+    error.value = "Something misfired in the machine. Please try again.";
     return;
   }
 
