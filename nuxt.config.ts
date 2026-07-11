@@ -14,6 +14,7 @@ export default defineNuxtConfig({
           name: 'description',
           content: 'Bedtime is an AI rhythm-section consultant for music producers. Describe your vibe, get structured production guidance for drums, bass, chords, and more.',
         },
+        { property: 'og:url', content: 'https://bedtime-zeta.vercel.app' },
         { property: 'og:type', content: 'website' },
         { property: 'og:title', content: 'Bedtime' },
         { property: 'og:description', content: 'Describe a vibe. Get production guidance.' },
